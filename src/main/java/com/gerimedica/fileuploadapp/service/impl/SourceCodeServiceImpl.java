@@ -28,14 +28,11 @@ public class SourceCodeServiceImpl implements SourceCodeService {
 
 
     public void saveContent(MultipartFile file) {
-        try {
-            List<SourceInput> sourceInputs = CsvHelper.convertToModel(file, SourceInput.class);
-            List<SourceCode> listToSave = sourceInputs.stream().map(inp-> modelMapper.map(inp, SourceCode.class)).collect(Collectors.toList());
-            sourceCodeRepository.saveAll(listToSave);
+         CsvHelper.convertToModel(file, SourceInput.class)
+                .stream()
+                . map(inp-> modelMapper.map(inp, SourceCode.class))
+                .forEach(element -> sourceCodeRepository.save(element));
 
-        } catch (Exception e) {
-            throw new RuntimeException("fail to store csv data: " + e.getMessage());
-        }
     }
 
     public List<SourceCode> getAllSourceCodeList() {

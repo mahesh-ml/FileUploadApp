@@ -28,9 +28,11 @@ public class SourceCodeController {
         if (CsvHelper.hasCsvFormat.apply(file)) {
             sourceCodeService.saveContent(file);
             return ResponseEntity.status(HttpStatus.CREATED).
-                    body(new ResponseMessage("Uploaded the file successfully: " + file.getOriginalFilename()));
+                    body(new ResponseMessage("Uploaded the file successfully: "
+                            + file.getOriginalFilename()));
          } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Please upload a csv file!"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseMessage("Please upload a csv file!"));
         }
 
     }

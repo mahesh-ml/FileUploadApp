@@ -99,7 +99,7 @@ public class SourceCodeControllerTest {
     @Test
     public void givenCode_whenGetByCode_thenReturnSourceObject() throws Exception {
         //given precondition or setup
-        String code = "219293";
+        String code = "1233";
         SourceCode src = SourceCode.builder().source("test").code("1233").build();
         given(sourceCodeService.getSourceByCode(code)).willReturn(src);
 

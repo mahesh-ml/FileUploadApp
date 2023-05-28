@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name="source_code", uniqueConstraints = {@UniqueConstraint(columnNames = "code")})
 @Builder
 public class SourceCode {
 
@@ -20,6 +19,7 @@ public class SourceCode {
 
     private String source;
     private String codeListCode;
+    @Column(unique = true)
     private String code;
     private String displayValue;
     private String longDescription;
