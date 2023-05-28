@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class SourceCodeServiceImpl implements SourceCodeService {
@@ -31,7 +30,7 @@ public class SourceCodeServiceImpl implements SourceCodeService {
          CsvHelper.convertToModel(file, SourceInput.class)
                 .stream()
                 . map(inp-> modelMapper.map(inp, SourceCode.class))
-                .forEach(element -> sourceCodeRepository.save(element));
+                .forEach(sourceCodeRepository::save);
 
     }
 

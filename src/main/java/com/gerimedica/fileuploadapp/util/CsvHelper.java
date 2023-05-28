@@ -15,7 +15,7 @@ import java.util.function.Function;
 @Slf4j
 public class CsvHelper {
 
-    public static Function<MultipartFile , Boolean> hasCsvFormat =  (file) ->  "text/csv".equals(file.getContentType());
+    public static final Function<MultipartFile , Boolean> hasCsvFormat =  (file) ->  "text/csv".equals(file.getContentType());
 
 
     public static <T> List<T> convertToModel(MultipartFile file, Class<T> responseType) {

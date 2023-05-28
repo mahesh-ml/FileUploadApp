@@ -24,7 +24,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity handleMaxSizeException(MaxUploadSizeExceededException exception,  WebRequest webRequest) {
+    public ResponseEntity<ErrorDetails> handleMaxSizeException(MaxUploadSizeExceededException exception,  WebRequest webRequest) {
         return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ErrorDetails(new Date(), exception.getMessage(), webRequest.getDescription(false)));
     }
+
 }
