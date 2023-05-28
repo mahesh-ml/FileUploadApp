@@ -1,5 +1,6 @@
 package com.gerimedica.fileuploadapp.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gerimedica.fileuploadapp.entity.SourceCode;
 import com.gerimedica.fileuploadapp.service.SourceCodeService;
 import org.junit.jupiter.api.Test;
@@ -7,16 +8,22 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,7 +38,8 @@ public class SourceCodeControllerTest {
     SourceCodeService sourceCodeService;
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
+    ObjectMapper objectMapper;
+
 
     @Test
     public void givenFiles_whenFindAll_thenReturnEntries() throws Exception {
@@ -48,6 +56,45 @@ public class SourceCodeControllerTest {
         result.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(2)));
+
+    }
+
+
+    @Test
+    public void givenFiles_whenSave_thenSaveTheCsv() throws Exception {
+        //given precondition or setup
+        doNothing().when(sourceCodeService).saveContent(any(MultipartFile.class));
+
+
+        MockMultipartFile file = new MockMultipartFile(
+                        "file",
+                        "test contract.csv","text/csv",
+                        "test,1212,test22".getBytes());
+
+
+        mockMvc.perform(
+                        multipart("/api/uploadContent")
+                                .file(file))
+                .andExpect(status().isCreated());
+
+
+    }
+
+    @Test
+    public void givenFilesWithWrongFormat_whenSave_thenError() throws Exception {
+        //given precondition or setup
+
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "test contract.pdf",MediaType.APPLICATION_JSON_VALUE,
+                "test,1212,test22".getBytes());
+
+
+        mockMvc.perform(
+                        multipart("/api/uploadContent")
+                                .file(file).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
 
     }
 
@@ -71,6 +118,8 @@ public class SourceCodeControllerTest {
 
 
     }
+
+
 
     @Test
     public void givenNothing_whenDeleteAll_thenSourceDeleted() throws Exception {
