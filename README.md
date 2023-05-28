@@ -2,6 +2,8 @@
 
 The goal is to create an application that allows uploading and getting a csv file
 
+Sample Request file is stored at src/main/resources folder.
+
 The first line of the file are the headers!
 Note: The field code is unique
 
