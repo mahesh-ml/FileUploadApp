@@ -1,11 +1,13 @@
 package com.gerimedica.fileuploadapp.service.impl;
 
 import com.gerimedica.fileuploadapp.entity.SourceCode;
+import com.gerimedica.fileuploadapp.exception.ApiException;
 import com.gerimedica.fileuploadapp.exception.ResourceNotFoundException;
 import com.gerimedica.fileuploadapp.payload.SourceInput;
 import com.gerimedica.fileuploadapp.repository.SourceCodeRepository;
 import com.gerimedica.fileuploadapp.service.SourceCodeService;
 import com.gerimedica.fileuploadapp.util.CsvHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Service
+@Slf4j
 public class SourceCodeServiceImpl implements SourceCodeService {
 
     final SourceCodeRepository sourceCodeRepository;
@@ -27,10 +30,15 @@ public class SourceCodeServiceImpl implements SourceCodeService {
 
 
     public void saveContent(MultipartFile file) {
-         CsvHelper.convertToModel(file, SourceInput.class)
-                .stream()
-                . map(inp-> modelMapper.map(inp, SourceCode.class))
-                .forEach(sourceCodeRepository::save);
+        try {
+            CsvHelper.convertToModel(file, SourceInput.class)
+                    .stream()
+                    .map(inp -> modelMapper.map(inp, SourceCode.class))
+                    .forEach(sourceCodeRepository::save);
+        }catch (Exception ex) {
+            log.error("Error while saving file " +ex.getMessage());
+            throw new ApiException("MultipartFile" ,"file", file.getOriginalFilename());
+        }
 
     }
 
