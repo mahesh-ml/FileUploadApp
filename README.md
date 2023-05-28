@@ -97,3 +97,21 @@ response Source Data cleared successfully
 
 
 
+
+**Local Run -** 
+
+Please use JDK 11 ( current project is built using JDK 17, Spring boot 3, Maven and H2 database)
+
+Simply checkout project into your workspace and run mvn clean install to build the project 
+
+run ./mvnw spring-boot:run , the application should run on port 8080
+
+
+or after mvn clean install please run below command under target folder 
+java -jar FileUploadApp-0.0.1-SNAPSHOT.jar
+
+
+
+
+
+
