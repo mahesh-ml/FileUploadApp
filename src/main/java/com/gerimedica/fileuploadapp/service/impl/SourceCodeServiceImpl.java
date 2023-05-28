@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class SourceCodeServiceImpl implements SourceCodeService {
 
-    SourceCodeRepository sourceCodeRepository;
+    final SourceCodeRepository sourceCodeRepository;
 
     @Autowired
     ModelMapper modelMapper;

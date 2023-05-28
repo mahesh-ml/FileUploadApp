@@ -16,7 +16,7 @@ import java.util.List;
 public class SourceCodeController {
 
 
-    SourceCodeService sourceCodeService;
+    final SourceCodeService sourceCodeService;
 
     public SourceCodeController(SourceCodeService sourceCodeService) {
         this.sourceCodeService = sourceCodeService;
