@@ -1,3 +1,5 @@
+**Task**
+
 The goal is to create an application that allows uploading and getting a csv file
 
 The first line of the file are the headers!
@@ -13,20 +15,49 @@ The application allows interaction through a Rest endpoint that allows the user 
 Data upload:
 Store to a database. The in memory database table will contain the fields as described on the csv file
 
-Following api have been implemented
-POST /api/uploadContent
+
+**OpenAPI EndPoint**
+
+http://localhost:8080/swagger-ui/index.html
+
+**Local Run -** 
+
+ Checkout project from github and import to intelliJ IDEA or any favourite IDE of your choice.
+
+ Software/Tools ->
+  JDK 17, Spring boot 3, Maven and H2 database
+
+ After importing and setting JDK to Java 17  run mvn clean install to build the project 
+
+ run ./mvnw spring-boot:run , the application should run on port 8080
+
+or alternatively run below command under target folder 
+**java -jar FileUploadApp-0.0.1-SNAPSHOT.jar**
+
+
+**Request-response** 
+
+
+Use Postman or any HttpClient to make http request . Below are the endpoint description 
+
+
+**POST /api/uploadContent**
 
 curl --location --request POST 'http://localhost:8080/api/uploadContent' \
 --header 'Content-Type: application/csv' \
 --form 'file=@"/Users/admin2/Downloads/exercise.csv"'
-response 
+
+response
 {
 "message": "Uploaded the file successfully: exercise.csv"
 }
 
-GET /api/getContent
+**GET /api/getContent**
+
 Get all uploaded contents
+
 curl --location --request GET 'http://localhost:8080/api/getContent'
+
 response
 [
 {
@@ -74,9 +105,11 @@ response
 "sortingPriority": ""
 }....]
 
-GET /api/getContent/{code}
+**GET /api/getContent/{code}**
+
 curl --location --request GET 'http://localhost:8080/api/getContent/271636001'
-response 
+
+response
 {
 "id": 1,
 "source": "ZIB",
@@ -90,26 +123,9 @@ response
 }
 
 
-DELETE http://localhost:8080/api/deleteContent
-response Source Data cleared successfully
+**DELETE http://localhost:8080/api/deleteContent**
 
-
-
-
-**Local Run -** 
-
-Please use JDK 11 ( current project is built using JDK 17, Spring boot 3, Maven and H2 database)
-
-Simply checkout project into your workspace and run mvn clean install to build the project 
-
-run ./mvnw spring-boot:run , the application should run on port 8080
-
-
-or after mvn clean install please run below command under target folder 
-java -jar FileUploadApp-0.0.1-SNAPSHOT.jar
-
-
-
+response -  Source Data cleared successfully
 
 
 
