@@ -1,5 +1,6 @@
 package com.gerimedica.fileuploadapp.util;
 
+import com.gerimedica.fileuploadapp.exception.ApiException;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,8 @@ import java.util.function.Function;
 @Slf4j
 public class CsvHelper {
 
-    public static final Function<MultipartFile , Boolean> hasCsvFormat =  (file) ->  "text/csv".equals(file.getContentType());
+    public static final Function<MultipartFile , Boolean> hasCsvFormat =  (file) ->
+            ApiConstants.MEDIA_TYPE.getMessage().equals(file.getContentType());
 
 
     public static <T> List<T> convertToModel(MultipartFile file, Class<T> responseType) {
@@ -34,8 +36,8 @@ public class CsvHelper {
 
             models = (List<T>) csvToBean.parse();
         } catch (Exception ex) {
-            log.error("Error parsing csv file {} ", ex);
-            throw new IllegalArgumentException(ex.getCause().getMessage());
+            log.error(ApiConstants.ERROR_FILE_PARSE.getMessage(), ex);
+            throw new ApiException("MultipartFile error", "File", ex.getMessage());
         }
         return models;
     }

@@ -3,6 +3,7 @@ package com.gerimedica.fileuploadapp.controller;
 import com.gerimedica.fileuploadapp.entity.SourceCode;
 import com.gerimedica.fileuploadapp.response.ResponseMessage;
 import com.gerimedica.fileuploadapp.service.SourceCodeService;
+import com.gerimedica.fileuploadapp.util.ApiConstants;
 import com.gerimedica.fileuploadapp.util.CsvHelper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,15 +25,14 @@ public class SourceCodeController {
 
     @PostMapping("/uploadContent")
     public ResponseEntity<ResponseMessage> uploadContent(@RequestParam("file") MultipartFile file) {
-
         if (CsvHelper.hasCsvFormat.apply(file)) {
             sourceCodeService.saveContent(file);
             return ResponseEntity.status(HttpStatus.CREATED).
-                    body(new ResponseMessage("Uploaded the file successfully: "
+                    body(new ResponseMessage(ApiConstants.SUCCESS_FILE_UPLOAD.getMessage()
                             + file.getOriginalFilename()));
          } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseMessage("Please upload a csv file!"));
+                    .body(new ResponseMessage(ApiConstants.INVALID_REQUEST_FILE_UPLOAD.getMessage()));
         }
 
     }
@@ -50,6 +50,6 @@ public class SourceCodeController {
     @DeleteMapping("/deleteContent")
     public ResponseEntity<String> deleteContents() {
         sourceCodeService.deleteAll();
-        return ResponseEntity.ok("Source Data cleared successfully");
+        return ResponseEntity.ok(ApiConstants.SUCCESS_DELETE.getMessage());
     }
 }

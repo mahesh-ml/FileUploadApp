@@ -1,5 +1,6 @@
 package com.gerimedica.fileuploadapp.config;
 
+import com.gerimedica.fileuploadapp.util.ApiConstants;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.modelmapper.ModelMapper;
@@ -18,8 +19,8 @@ public class AppConfig {
     @Bean
     public OpenAPI usersMicroserviceOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("File Management API")
-                        .description("Upload File, View content , View By Code, Delete All Endpoints")
-                        .version("1.0"));
+                .info(new Info().title(ApiConstants.OPEN_API_TITLE.getMessage())
+                        .description(ApiConstants.OPEN_API_DESC.getMessage())
+                        .version(ApiConstants.OPEN_API_VERSION.getMessage()));
     }
 }

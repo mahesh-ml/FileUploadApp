@@ -13,9 +13,14 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>FileUploadApp</name>
     <description>FileUploadApp</description>
+
     <properties>
         <java.version>17</java.version>
+        <mapper.version>3.1.1</mapper.version>
+        <opencsv.version>5.7.1</opencsv.version>
+        <openapi.version>2.0.2</openapi.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -34,20 +39,19 @@
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
-            <version>3.1.1</version>
+            <version>${mapper.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
-            <version>5.7.1</version>
+            <version>${opencsv.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.0.2</version>
+            <version>${openapi.version}</version>
         </dependency>
 
         <dependency>
