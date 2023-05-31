@@ -128,7 +128,7 @@ public class SourceCodeServiceTest {
         MockMultipartFile invalidFile = new MockMultipartFile("file", "invalid.csv",
                 "text/csv", invalidContent.getBytes(StandardCharsets.UTF_8));
 
-        when(modelMapper.map(any(), any())).thenThrow(RuntimeException.class);
+
 
         Assertions.assertThrows(ApiException.class, () -> classUnderTest.saveContent(invalidFile));
     }
