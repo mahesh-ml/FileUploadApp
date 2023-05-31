@@ -2,13 +2,16 @@ package com.gerimedica.fileuploadapp.payload;
 
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Setter
 @Getter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class SourceInput {
     @CsvBindByName(column = "source")
     private String source;
