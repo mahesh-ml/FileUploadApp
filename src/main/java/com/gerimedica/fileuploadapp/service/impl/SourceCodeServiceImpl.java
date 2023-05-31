@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -22,25 +23,27 @@ public class SourceCodeServiceImpl implements SourceCodeService {
 
     final SourceCodeRepository sourceCodeRepository;
 
-    @Autowired
-    ModelMapper modelMapper;
 
-    public SourceCodeServiceImpl(SourceCodeRepository sourceCodeRepository) {
+    final ModelMapper modelMapper;
+
+    public SourceCodeServiceImpl(SourceCodeRepository sourceCodeRepository,ModelMapper modelMapper) {
         this.sourceCodeRepository = sourceCodeRepository;
+        this.modelMapper=modelMapper;
     }
 
 
     public void saveContent(MultipartFile file) {
         try {
-            CsvHelper.convertToModel(file, SourceInput.class)
+            List<SourceCode> sourceCodes = CsvHelper.convertToModel(file, SourceInput.class)
                     .stream()
                     .map(inp -> modelMapper.map(inp, SourceCode.class))
-                    .forEach(sourceCodeRepository::save);
-        }catch (Exception ex) {
-            log.error(ApiConstants.ERROR_FILE_SAVE.getMessage() +ex.getMessage());
-            throw new ApiException("MultipartFile" ,"file", file.getOriginalFilename());
+                    .collect(Collectors.toList());
+            sourceCodeRepository.saveAll(sourceCodes);
+        } catch (Exception ex) {
+            String message = ApiConstants.ERROR_FILE_SAVE.getMessage() + ex.getMessage();
+            log.error(message);
+            throw new ApiException("MultipartFile", "file", file.getOriginalFilename());
         }
-
     }
 
     public List<SourceCode> getAllSourceCodeList() {

@@ -25,15 +25,15 @@ public class SourceCodeController {
 
     @PostMapping("/uploadContent")
     public ResponseEntity<ResponseMessage> uploadContent(@RequestParam("file") MultipartFile file) {
-        if (CsvHelper.hasCsvFormat.apply(file)) {
-            sourceCodeService.saveContent(file);
-            return ResponseEntity.status(HttpStatus.CREATED).
-                    body(new ResponseMessage(ApiConstants.SUCCESS_FILE_UPLOAD.getMessage()
-                            + file.getOriginalFilename()));
-         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        if (!CsvHelper.hasCsvFormat.apply(file)) {
+            return ResponseEntity.badRequest()
                     .body(new ResponseMessage(ApiConstants.INVALID_REQUEST_FILE_UPLOAD.getMessage()));
         }
+
+        sourceCodeService.saveContent(file);
+        ResponseMessage responseMessage = new ResponseMessage(ApiConstants.SUCCESS_FILE_UPLOAD.getMessage()
+                + file.getOriginalFilename());
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseMessage);
 
     }
 

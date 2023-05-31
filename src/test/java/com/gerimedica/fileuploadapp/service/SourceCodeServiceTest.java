@@ -6,6 +6,7 @@ import com.gerimedica.fileuploadapp.payload.SourceInput;
 import com.gerimedica.fileuploadapp.repository.SourceCodeRepository;
 import com.gerimedica.fileuploadapp.service.impl.SourceCodeServiceImpl;
 import com.gerimedica.fileuploadapp.util.CsvHelper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,10 +15,13 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +29,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SourceCodeServiceTest {
@@ -34,6 +37,9 @@ public class SourceCodeServiceTest {
 
     @Mock
     SourceCodeRepository sourceCodeRepository;
+
+    @Mock
+    private ModelMapper modelMapper;
 
     @InjectMocks
     SourceCodeServiceImpl classUnderTest;
@@ -101,24 +107,30 @@ public class SourceCodeServiceTest {
         verify(sourceCodeRepository, times(1)).deleteAll();
     }
 
+
     @Test
-    public void givenAll_whenSaveContentCsvError_thenContentsNotSaved() {
+    public void saveContent_withValidCsvFile_savesAllSourceCodes() throws Exception {
+        String csvContent = "id,name\n1,Alice\n2,Bob\n";
+        MockMultipartFile csvFile = new MockMultipartFile("file", "test11.csv",
+                "text/csv", csvContent.getBytes(StandardCharsets.UTF_8));
 
-        //given precondition or setup
-        MultipartFile file = new MockMultipartFile(
-                "file",
-                "test contract.pdf",MediaType.APPLICATION_JSON_VALUE,
-                "test,1212,test22".getBytes());
-        try (MockedStatic<CsvHelper> mockedStatic = Mockito.mockStatic(CsvHelper.class)) {
-            mockedStatic.when(() -> CsvHelper.convertToModel(file, SourceInput.class))
-                    .thenThrow(new ApiException("test","test","test"));
-        }
+        when(modelMapper.map(any(), any())).thenReturn(new SourceCode());
+        when(sourceCodeRepository.saveAll(any())).thenReturn(Collections.emptyList());
 
-        //when - action or behaviour that we are testing
-        classUnderTest.saveContent(file);
+        classUnderTest.saveContent(csvFile);
 
-        //then -verify the output
-        verify(sourceCodeRepository, times(0)).save(src);
+        verify(sourceCodeRepository).saveAll(any());
+    }
+
+    @Test
+    void saveContent_withInvalidCsvFile_throwsApiException() throws Exception {
+        String invalidContent = "id,name,age\n1,Alice,20\n2,Bob";
+        MockMultipartFile invalidFile = new MockMultipartFile("file", "invalid.csv",
+                "text/csv", invalidContent.getBytes(StandardCharsets.UTF_8));
+
+        when(modelMapper.map(any(), any())).thenThrow(RuntimeException.class);
+
+        Assertions.assertThrows(ApiException.class, () -> classUnderTest.saveContent(invalidFile));
     }
 
 
